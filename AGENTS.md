@@ -2,13 +2,21 @@
 
 ## Product Context
 
-Communities is a community-oriented platform for recording and tracking
+Scroll of Encounters is a community-oriented platform for recording and tracking
 tabletop game matches. The initial supported game is Magic: The Gathering,
 with Commander as the primary format.
 
 The project is not primarily a tournament manager. Its core purpose is to
 maintain trustworthy match history, community rankings, player statistics,
 and match validation.
+
+Although Magic: The Gathering and Commander are the initial focus, the domain
+architecture should remain extensible to other tabletop games and formats.
+
+The product name is **Scroll of Encounters**.
+
+"Community" remains a domain concept inside the application and should not be
+renamed merely because the product was previously called Communities.
 
 Current architecture:
 
@@ -89,11 +97,17 @@ inside HTTP routes or frontend code.
 
 - `backend/app/main.py` creates the FastAPI application and registers routers.
 - `backend/app/routers/cards.py` exposes `GET /cards/search?name=...`.
-- `backend/app/services/scryfall.py` handles asynchronous Scryfall requests and normalizes card data, including images for double-faced cards.
+- `backend/app/services/scryfall.py` handles asynchronous Scryfall requests and
+  normalizes card data, including images for double-faced cards.
 - `backend/requirements.txt` pins Python dependencies.
-- `frontend/` is currently empty; no frontend tooling or asset structure is established.
+- `frontend/` is currently empty; no frontend tooling or asset structure is
+  established.
 
-Keep HTTP routes in `routers/` and external API integration logic in `services/`. There is currently no test directory or database implementation, although database libraries are listed as dependencies.
+Keep HTTP routes in `routers/` and external API integration logic in
+`services/`.
+
+There is currently no test directory or database implementation in the
+repository, although database libraries are listed as dependencies.
 
 ## Build, Test, and Development Commands
 
@@ -105,20 +119,79 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
 ```
 
-Create the virtual environment only if it does not already exist. The remaining commands install dependencies and start the development API at `http://127.0.0.1:8000`. Use `/docs` for interactive endpoint checks and `/` for the basic health response. No build pipeline or frontend commands are configured.
+Create the virtual environment only if it does not already exist.
+
+The remaining commands install dependencies and start the development API at
+`http://127.0.0.1:8000`.
+
+Use `/docs` for interactive endpoint checks and `/` for the basic health
+response.
+
+No build pipeline or frontend commands are currently configured.
 
 ## Coding Style & Naming Conventions
 
-Use four-space indentation, snake_case for Python modules and functions, and UPPER_SNAKE_CASE for constants such as `SCRYFALL_URL`. Follow existing double-quoted strings and grouped imports. Add type hints to new function parameters. Keep network operations asynchronous using `httpx.AsyncClient`; avoid blocking calls in async routes. No formatter or linter is currently configured.
+Use four-space indentation, snake_case for Python modules and functions, and
+UPPER_SNAKE_CASE for constants such as `SCRYFALL_URL`.
+
+Follow existing double-quoted strings and grouped imports.
+
+Add type hints to new function parameters.
+
+Keep network operations asynchronous using `httpx.AsyncClient`; avoid blocking
+calls in async routes.
+
+No formatter or linter is currently configured.
 
 ## Testing Guidelines
 
-No automated test framework, test command, or coverage threshold is established. For API changes, verify `/` and `/cards/search` through `/docs` and record results. When introducing automated tests, use `backend/tests/test_*.py`, document the runner and dependencies, and mock Scryfall responses. Cover successful searches, upstream errors, missing images, and double-faced cards.
+No automated test framework, test command, or coverage threshold is currently
+established.
+
+For API changes, verify `/` and `/cards/search` through `/docs` and record the
+results.
+
+When introducing automated tests:
+
+- use `backend/tests/test_*.py`
+- document the runner and dependencies
+- mock Scryfall responses
+- cover successful searches
+- cover upstream errors
+- cover missing images
+- cover double-faced cards
 
 ## Commit & Pull Request Guidelines
 
-This workspace has no Git metadata, so existing commit conventions cannot be verified. Use concise imperative messages, for example `Fix image extraction for double-faced cards`. Keep changes focused. PR descriptions should explain behavior changes, reference related issues when available, and list validation performed. Include request/response examples for API changes and screenshots for future UI changes.
+This project uses Git with `main` as the primary branch.
+
+Use Conventional Commit-style messages when practical:
+
+- `feat:` for new features
+- `fix:` for bug fixes
+- `refactor:` for internal code changes without behavior changes
+- `docs:` for documentation changes
+- `test:` for test-related changes
+- `chore:` for maintenance and repository configuration
+
+Keep commits focused on a single logical change.
+
+Pull request descriptions should explain behavior changes, reference related
+issues when available, and list validation performed.
+
+Include request/response examples for API changes and screenshots for future
+UI changes.
 
 ## Security & Configuration
 
-Keep secrets in local environment configuration; never commit `.env`, `.venv/`, or `__pycache__/`. Document new configuration variables with nonsecret examples. Preserve Scryfall request headers when modifying its integration.
+Keep secrets in local environment configuration.
+
+Never commit:
+
+- `.env`
+- `.venv/`
+- `__pycache__/`
+
+Document new configuration variables with nonsecret examples.
+
+Preserve Scryfall request headers when modifying its integration.
