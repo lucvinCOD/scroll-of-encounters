@@ -14,6 +14,7 @@ from app.routers.games import router as games_router
 from app.routers.player import router as players_router
 from app.routers.auth import router as auth_router
 from app.routers.matches import router as matches_router
+from app.routers.governance import router as governance_router
 
 
 # 🧑‍💻 VARIÁVEL NOSSA: app.
@@ -46,3 +47,4 @@ app.include_router(players_router)
 
 app.include_router(auth_router)
 app.include_router(matches_router)
+app.include_router(governance_router)

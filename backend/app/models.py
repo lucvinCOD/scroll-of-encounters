@@ -1,5 +1,6 @@
 from datetime import date, time
 from typing import Literal
+from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, model_validator
 
 class StrictModel(BaseModel):
@@ -26,6 +27,16 @@ class GuestRequest(StrictModel):
 class ProfileRequest(StrictModel):
     username: str = Field(min_length=3, max_length=40)
     community_id: int = Field(gt=0)
+
+class ModeratorAssignment(StrictModel):
+    profile_id: UUID
+    community_id: int = Field(gt=0)
+    enabled: bool
+    reason: str = Field(min_length=10, max_length=2000)
+
+class DisputeResolution(StrictModel):
+    decision: Literal["VERIFY", "CANCEL"]
+    reason: str = Field(min_length=10, max_length=2000)
 
 class MatchResult(StrictModel):
     type: Literal["winner", "draw"]

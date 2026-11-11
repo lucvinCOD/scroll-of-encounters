@@ -4,6 +4,12 @@ from fastapi import HTTPException
 from app.config import supabase_config
 
 MESSAGES = {
+    "SOE_ACCESS_DENIED": "Sua conta não tem permissão para acessar estes registros.",
+    "SOE_SELF_REVIEW": "Você não pode decidir uma disputa de partida que publicou ou da qual participou. Encaminhe para outra pessoa autorizada.",
+    "SOE_REASON_REQUIRED": "Informe uma justificativa entre 10 e 2000 caracteres.",
+    "SOE_INVALID_DECISION": "Escolha validar o registro ou cancelar a partida.",
+    "SOE_INVALID_REFERENCE": "Confira o usuário e a comunidade selecionados.",
+    "SOE_DISPUTE_CHANGED": "Esta disputa já mudou de estado. Atualize a página antes de continuar.",
     "SOE_PROFILE_NAME": "O nome público deve ter entre 3 e 40 caracteres.",
     "SOE_USERNAME_UNAVAILABLE": "Esse nome público já está em uso. Escolha outro.",
     "SOE_TEMPORAL_CONFLICT": "Um participante já possui partida com início a menos de 10 minutos deste horário.",
@@ -31,7 +37,7 @@ async def rpc(name: str, parameters: dict | None = None):
             error = {}
         code, message = error.get("code", ""), error.get("message", "")
         if message in MESSAGES:
-            status = 409 if code == "23P01" else 403 if code == "42501" else 422
+            status = 409 if code in ("23P01", "40001") else 403 if code == "42501" else 422
             raise HTTPException(status, {"code": message, "message": MESSAGES[message]})
         if code in ("40001", "40P01", "55P03"):
             raise HTTPException(409, "Outra operação alterou os participantes. Tente novamente.")

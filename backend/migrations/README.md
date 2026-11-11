@@ -1,6 +1,15 @@
 # Migrações — estado atual do MVP
 
-Atualizado em 2026-11-11. **Supabase CLI é o único versionamento.** As três
+**Etapa 004 aplicada após aprovação específica:** `20261111000400_account_permissions_and_moderation.sql`,
+três tabelas privadas com RLS default deny, capacidades restritas de moderação/
+administração e bootstrap exclusivo de operador. Nenhuma promoção automática ou
+alteração dos dados históricos. Dry-run prévio listou somente 004; o posterior
+confirmou zero pendências. Hashes/contagens das oito tabelas antigas preservados;
+zero administradores/moderadores atribuídos. Bootstrap aguarda aprovação separada.
+Impacto, validação e aprovação específica em
+[contas e permissões](../../docs/ACCOUNTS_AND_PERMISSIONS.md).
+
+Atualizado em 2026-11-11. **Supabase CLI é o único versionamento.** As quatro
 versões abaixo foram aplicadas no projeto vinculado `ikmadcldfxvnupajxdwm`.
 
 | Versão | Efeito e validação |
@@ -8,9 +17,10 @@ versões abaixo foram aplicadas no projeto vinculado `ikmadcldfxvnupajxdwm`.
 | `20261111000100` | Término opcional, sem apagar seus valores. Início já existia manualmente como TIME NULL. |
 | `20261111000200` | Registro atômico PENDING, catálogo, histórico, convidados e identidade. Triggers de resultados/participantes/inícios e locks por jogador. Funções de aplicação executáveis somente por service_role, aprovadas na interface. |
 | `20261111000300` | Criação atômica/idempotente de profile e player para uma conta Supabase autenticada. Usa a FK já existente para auth.users. Nenhuma conta ou perfil foi criado durante a aplicação. Acesso restrito aprovado na interface. |
+| `20261111000400` | Papéis, moderação por comunidade, auditoria e procedimento de operador. Aplicada após aprovação específica; sem promoção de contas reais. |
 
-Pós-verificação remota de 003: colunas, RLS, políticas e ACL das tabelas iguais
-às de antes. As seis capacidades públicas têm EXECUTE somente para service_role
+Pós-verificação remota de 004: dados, colunas, RLS, políticas e ACL das tabelas antigas iguais
+às de antes. As doze capacidades públicas têm EXECUTE somente para service_role
 (além do proprietário); anon/authenticated não podem chamá-las. A chave privada
 fica exclusivamente no backend. A partida id=1 foi preservada com início NULL,
 término 10:30, data 2026-09-15 e status PENDING. Não houve backfill.
@@ -63,7 +73,7 @@ alteração de RLS, dados ou atribuição de papéis administrativos. Configura�
 é migração SQL. A URL local requer o frontend em execução no computador do usuário.
 
 As evidências de inspeção ficam em `supabase/.temp/mvp-audit/`, ignoradas pelo Git.
-Validação de escrita autenticada real e entrega de e-mails ainda pendentes.
+Validação de escrita autenticada real, bootstrap autorizado e entrega de e-mails ainda pendentes.
 
 ## Histórico da adoção inicial (001)
 
