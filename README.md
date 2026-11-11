@@ -5,6 +5,12 @@ mesa. MVP com React + TypeScript + Vite + Tailwind, FastAPI e Supabase/PostgreSQ
 
 Arquivos, contrato HTTP, decisões e evidências: [entrega do MVP](docs/MVP_DELIVERY.md).
 
+Contas USER, moderação por comunidade e administração global:
+[permissões e procedimento de bootstrap](docs/ACCOUNTS_AND_PERMISSIONS.md).
+A migração 004 foi aplicada após aprovação específica. O bootstrap da conta do
+proprietário foi executado depois de outra aprovação específica do UUID.
+ADMIN usa o mesmo login e inclui moderação; não é necessário um segundo login.
+
 ## Executar localmente
 
 Requisitos: Node.js 24.12+ e Python 3.14 (ambiente atual). Na raiz:
@@ -71,9 +77,9 @@ preservados e geram aviso quando relevantes à data; seu horário não é invent
 Resultados e quantidade de participantes são verificados também por constraints
 deferidas. Falhas não deixam partida ou participantes parcialmente gravados.
 
-As seis funções públicas novas são SECURITY DEFINER com search_path fixo e
+As doze funções públicas de aplicação são SECURITY DEFINER com search_path fixo e
 somente service_role pode executá-las. Helpers ficam em schema privado. Nenhuma
-política RLS ou permissão de tabela é ampliada. As migrações 002 e 003 foram
+política RLS ou permissão de tabela antiga é ampliada. As migrações 002, 003 e 004 foram
 aplicadas com aprovação pela interface; os acessos foram conferidos no remoto.
 
 O retorno de confirmação/recuperação recebe tokens temporariamente pelo fragmento

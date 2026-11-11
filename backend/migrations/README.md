@@ -5,7 +5,9 @@ três tabelas privadas com RLS default deny, capacidades restritas de moderaçã
 administração e bootstrap exclusivo de operador. Nenhuma promoção automática ou
 alteração dos dados históricos. Dry-run prévio listou somente 004; o posterior
 confirmou zero pendências. Hashes/contagens das oito tabelas antigas preservados;
-zero administradores/moderadores atribuídos. Bootstrap aguarda aprovação separada.
+zero administradores/moderadores atribuídos pela migração. Depois, o bootstrap
+do proprietário foi executado após aprovação separada: um ADMIN, um evento de
+auditoria, zero vínculos de moderador. Nenhuma atribuição automática foi feita.
 Impacto, validação e aprovação específica em
 [contas e permissões](../../docs/ACCOUNTS_AND_PERMISSIONS.md).
 
@@ -73,7 +75,10 @@ alteração de RLS, dados ou atribuição de papéis administrativos. Configura�
 é migração SQL. A URL local requer o frontend em execução no computador do usuário.
 
 As evidências de inspeção ficam em `supabase/.temp/mvp-audit/`, ignoradas pelo Git.
-Validação de escrita autenticada real, bootstrap autorizado e entrega de e-mails ainda pendentes.
+Bootstrap autorizado concluído; consultas RPC e sessão HTTP real nas áreas
+administrativas verificadas. Logs confirmaram recuperação, sessão, troca de senha
+e login. Gravação real de partidas, primeira designação de moderador e decisão
+real de disputa continuam não executadas nesta etapa.
 
 ## Histórico da adoção inicial (001)
 

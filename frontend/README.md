@@ -5,6 +5,13 @@ histórico e registro usam o FastAPI real. Cadastro, confirmação por e-mail,
 recuperação de senha e conclusão de perfil usam Supabase Auth pelo backend.
 Veja o estado remoto e as pendências em [README da raiz](../README.md).
 
+As áreas `#/moderacao` e `#/administracao` usam permissões verificadas no backend
+e PostgreSQL. Os links dependem da identidade atual: USER vê a navegação comum;
+MODERATOR vê moderação; ADMIN vê ambas. A migração 004 já foi aplicada após
+aprovação; o bootstrap da conta do proprietário também foi executado após
+aprovação específica do UUID. Não há modo demonstrativo com
+privilégios fictícios. Consulte [contas e permissões](../docs/ACCOUNTS_AND_PERMISSIONS.md).
+
 ## Desenvolvimento
 
 Requer Node.js 24.12+; o ambiente usado tem Node.js 24.19.0. As versões diretas

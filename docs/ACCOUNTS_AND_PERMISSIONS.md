@@ -1,8 +1,9 @@
 # Contas, papéis e permissões
 
 Implementação em 2026-11-11, branch `feat/mvp-web`. A migração 004 foi aplicada
-no remoto após aprovação específica do proprietário. Nenhuma conta real foi
-promovida; o bootstrap depende da identificação do UUID e de aprovação separada.
+no remoto após aprovação específica do proprietário. O bootstrap da conta do
+proprietário também foi executado, somente depois da confirmação do UUID ativo
+e de uma segunda aprovação específica. Há um ADMIN e nenhum moderador designado.
 
 ## Modelo e matriz de acesso
 
@@ -168,7 +169,7 @@ RLS habilitada e nenhum acesso direto das roles clientes nas três novas tabelas
 As doze capacidades públicas continuam restritas a service_role; o bootstrap
 não é executável por essa role. Hashes/contagens dos dados e definições das oito
 tabelas antigas, RLS/ACL/políticas e linha histórica id=1 ficaram iguais.
-Contagens novas: zero ADMINs, zero moderadores, zero eventos. Evidências ignoradas
+Contagens imediatamente após a migração: zero ADMINs, zero moderadores, zero eventos. Evidências ignoradas
 em supabase/.temp/permissions-audit/{pre-apply,post-apply,empty-assignments}.json.
 Aplicação da migração e promoção de uma conta são aprovações distintas.
 Não editar versões já aplicadas
@@ -199,7 +200,8 @@ correção versionada revisada, preservando auditoria, não um DROP automático.
    npm.cmd run supabase -- db query --remote --file "CAMINHO_DO_SQL_REVISADO" --yes
    ```
 
-   Esse comando é de escrita, não usar --read-only. Não foi executado nesta tarefa.
+   Esse comando é de escrita, não usar --read-only. Foi executado nesta tarefa
+   somente para o UUID do proprietário, após aprovação específica da promoção.
    O SQL chama soe_private.manage_admin apenas como operador/proprietário. O
    backend/service_role não pode executar esse procedimento. Bootstrap só funciona
    quando não existe ADMIN; não há fallback automático para promover outra conta.
@@ -258,12 +260,26 @@ Resultados executados nesta etapa:
 - Scanner de arquivos versionáveis sem segredos e git diff --check sem erros.
   Starlette mantém o aviso conhecido de depreciação httpx nos testes, sem falhas.
 
-Pendências: criação/confirmação da conta do proprietário, aprovação separada do
-UUID para bootstrap e primeiro vínculo real de MODERATOR. A migração já está no
-Supabase remoto; operações autenticadas privilegiadas com contas reais ainda
-não foram testadas, pois nenhuma conta foi promovida. Não houve validação visual
-automatizada nem screenshot de sessão administrativa real. O recebimento dos
-e-mails e o fluxo com conta real continuam precisando de validação pelo usuário.
+Bootstrap remoto concluído após a segunda aprovação específica: um ADMIN,
+um evento BOOTSTRAP_ADMIN para o UUID aprovado e zero vínculos de MODERATOR.
+A identidade retornada pela Supabase Data API é ADMIN. Consultas reais via RPC
+de usuários, auditoria e fila de disputas passaram; nenhuma disputa foi decidida
+nem moderador real designado para testar. Evidências privadas em
+supabase/.temp/permissions-audit/bootstrap-{target,post}.json; SQL executado
+permanece ignorado em supabase/.temp/permission-operations/.
+
+Os logs HTTP da sessão real do usuário também confirmaram: recuperação aceita
+(202), estabelecimento da sessão (200), troca de senha (204), novo login (200)
+e consultas /auth/me, /admin/users, /admin/audit e /moderation/matches com 200.
+Isso valida a comunicação navegador → FastAPI → Supabase Auth/PostgreSQL para
+as leituras administrativas; não é somente um teste RPC com autenticação simulada.
+Senhas/tokens/cookies não foram lidos ou registrados nesta verificação.
+
+Pendências: primeiro vínculo real de MODERATOR (depende de uma pessoa/perfil e
+comunidade escolhidos pelo administrador) e confirmação visual do usuário. Não
+houve screenshot ou validação visual automatizada; houve validação HTTP da sessão
+real conforme registrado acima. Cadastro de uma nova pessoa, atribuição real de
+MODERATOR e resolução de uma disputa real permanecem não executados nesta etapa.
 
 Referências técnicas: [funções Supabase](https://supabase.com/docs/guides/database/functions),
 [metadados de usuários](https://supabase.com/docs/guides/auth/users),
