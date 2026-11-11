@@ -1,5 +1,10 @@
 # Entrega local do MVP — 2026-11-11
 
+Este documento registra a etapa inicial do MVP. A evolução posterior de contas,
+permissões, migração 004, bootstrap aprovado e confirmação das áreas pelo usuário
+está em [Contas e permissões](ACCOUNTS_AND_PERMISSIONS.md). As pendências de conta
+do proprietário e acesso administrativo descritas nesta etapa já foram resolvidas.
+
 Branch: `feat/mvp-web`. Alterações preexistentes foram preservadas no commit
 `c34abbb`. Nenhum push, merge ou reescrita de histórico foi realizado.
 

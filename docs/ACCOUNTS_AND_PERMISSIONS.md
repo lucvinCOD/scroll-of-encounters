@@ -275,10 +275,15 @@ Isso valida a comunicação navegador → FastAPI → Supabase Auth/PostgreSQL p
 as leituras administrativas; não é somente um teste RPC com autenticação simulada.
 Senhas/tokens/cookies não foram lidos ou registrados nesta verificação.
 
+O proprietário confirmou na interface: **Administração e Moderação abrem
+normalmente**. A validação manual da sessão e das duas áreas foi concluída.
+Na listagem de contas, ADMIN apresenta alcance global de moderação, mesmo sem
+vínculos individuais de comunidade.
+
 Pendências: primeiro vínculo real de MODERATOR (depende de uma pessoa/perfil e
-comunidade escolhidos pelo administrador) e confirmação visual do usuário. Não
-houve screenshot ou validação visual automatizada; houve validação HTTP da sessão
-real conforme registrado acima. Cadastro de uma nova pessoa, atribuição real de
+comunidade escolhidos pelo administrador). Não houve screenshot ou validação
+visual automatizada; houve validação HTTP da sessão real e confirmação manual
+do usuário conforme registrado acima. Cadastro de uma nova pessoa, atribuição real de
 MODERATOR e resolução de uma disputa real permanecem não executados nesta etapa.
 
 Referências técnicas: [funções Supabase](https://supabase.com/docs/guides/database/functions),
