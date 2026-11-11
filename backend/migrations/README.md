@@ -51,12 +51,16 @@ não destrutiva revisada segue AGENTS.md; mudança de segurança/destrutiva exig
 aprovação específica pela interface antes de `db push --remote --skip-vault --yes`.
 `--yes` responde ao CLI **depois** da aprovação, não a substitui.
 
-**Configuração de autenticação pendente:** `supabase/config.toml` declara
-site_url `http://127.0.0.1:5173`; o remoto ainda usa `http://localhost:3000`.
-`config diff --remote` confirmou uma única atualização declarada. `config push
---remote --yes` foi rejeitado pela revisão automática por afetar autenticação em
-produção; aguarda aprovação específica do proprietário. Não desativar confirmação
-de e-mail/MFA nem ampliar a allowlist como atalho. Configuração não é migração SQL.
+**Configuração de autenticação aplicada em 2026-11-11:** após a rejeição inicial
+pela revisão automática, o proprietário aprovou especificamente a alteração de
+auth.site_url no projeto de produção, de `http://localhost:3000` para
+`http://127.0.0.1:5173`. O diff foi reconferido antes da aplicação e continha
+somente essa atualização declarada. Comando executado com sucesso:
+`npm.cmd run supabase -- config push --remote --yes`.
+O diff posterior confirmou zero diferenças declaradas; as outras dez propriedades
+comparadas permaneceram iguais, incluindo confirmação de e-mail e MFA. Não houve
+alteração de RLS, dados ou atribuição de papéis administrativos. Configuração não
+é migração SQL. A URL local requer o frontend em execução no computador do usuário.
 
 As evidências de inspeção ficam em `supabase/.temp/mvp-audit/`, ignoradas pelo Git.
 Validação de escrita autenticada real e entrega de e-mails ainda pendentes.

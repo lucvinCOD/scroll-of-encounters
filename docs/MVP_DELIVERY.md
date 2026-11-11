@@ -96,10 +96,12 @@ FastAPI `/`, `/docs`, `/catalog`, `/communities/`, `/formats/`, `/players/`,
 
 ## Pendências e validação manual
 
-1. Aprovação específica para `npm.cmd run supabase -- config push --remote --yes`.
-   O diff declara apenas auth.site_url: localhost:3000 → 127.0.0.1:5173.
-   A revisão automática rejeitou essa mudança por afetar os links de autenticação
-   do projeto de produção; ela ainda não foi aplicada. Não repetir sem aprovação.
+1. **Concluído em 2026-11-11:** o proprietário aprovou especificamente a alteração
+   de auth.site_url em produção após a rejeição inicial da revisão automática.
+   `npm.cmd run supabase -- config push --remote --yes` alterou somente
+   localhost:3000 → 127.0.0.1:5173. Diff posterior: zero diferenças declaradas;
+   outras dez propriedades comparadas inalteradas, incluindo confirmação de
+   e-mail/MFA. Usar o link de e-mail no mesmo computador com frontend em execução.
 2. O proprietário cria/recupera sua própria conta na tela Entrar. Confirmar
    recebimento do e-mail; entrega/SMTP não foram validados. Não enviar senha,
    token ou link de acesso pelo chat. Completar perfil e comunidade principal.

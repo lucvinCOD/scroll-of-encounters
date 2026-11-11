@@ -81,11 +81,13 @@ do endereço, remove-os antes de renderizar e os troca por cookies HttpOnly pelo
 backend. Não há armazenamento de tokens em localStorage/sessionStorage.
 O fluxo segue o [retorno de autenticação do Supabase](https://supabase.com/docs/guides/auth/sessions/implicit-flow).
 
-**Pendente:** a URL de retorno remoto ainda é `http://localhost:3000`. A proposta
-em `supabase/config.toml` é `http://127.0.0.1:5173`; sua aplicação foi bloqueada
-pela revisão automática e depende de aprovação específica por afetar os e-mails
-de todos os usuários do projeto de produção. Não há confirmação de entrega dos
-e-mails nem de gravação autenticada em produção. Não compartilhar links de acesso.
+**Aplicado em 2026-11-11 após aprovação específica do proprietário:** a URL de
+retorno remoto passou de `http://localhost:3000` para `http://127.0.0.1:5173`.
+A verificação posterior confirmou zero diferenças declaradas e as outras dez
+propriedades comparadas inalteradas, incluindo confirmação de e-mail e MFA.
+O retorno local requer o frontend em execução neste computador; abrir o link
+no celular apontará ao próprio celular. Ainda não há confirmação de entrega
+dos e-mails nem de gravação autenticada em produção. Não compartilhar links de acesso.
 
 Migrações oficiais em `supabase/migrations/`. Nunca rodar db reset no remoto.
 Remoção de término/cota diária permanece fora das migrações executáveis até a
