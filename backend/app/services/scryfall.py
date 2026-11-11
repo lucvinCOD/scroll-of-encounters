@@ -15,17 +15,16 @@ async def search_card_by_name(name: str):
         "fuzzy": name
     }
 
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            SCRYFALL_URL,
-            params=params,
-            headers=HEADERS
-        )
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            response = await client.get(SCRYFALL_URL, params=params, headers=HEADERS)
+    except httpx.RequestError:
+        raise HTTPException(503, "Busca de cartas temporariamente indisponível.") from None
 
     if response.status_code != 200:
         raise HTTPException(
-            status_code=response.status_code,
-            detail="Card not found"
+            status_code=404 if response.status_code == 404 else 503,
+            detail="Card not found" if response.status_code == 404 else "Busca de cartas temporariamente indisponível."
         )
 
     card = response.json()
@@ -35,7 +34,7 @@ async def search_card_by_name(name: str):
     if "image_uris" in card:
         image = card["image_uris"].get("normal")
 
-    elif "card_faces" in card:
+    elif card.get("card_faces"):
         first_face = card["card_faces"][0]
 
         if "image_uris" in first_face:

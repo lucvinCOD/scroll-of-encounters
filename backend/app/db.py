@@ -1,24 +1,41 @@
-# Importa a função responsável por carregar as variáveis do arquivo .env
-# Tanto .env quanto dotenv vem da palavra environment.
-# FUNÇÃO EXTERNA: instalada na .venv através do pacote python-dotenv.
-from dotenv import load_dotenv
+"""Transporte assíncrono da Supabase Data API, exclusivo do servidor."""
+import httpx
+from fastapi import HTTPException
+from app.config import supabase_config
 
-# Importa o módulo da biblioteca padrão do Python para acessar variáveis de ambiente
-import os
+MESSAGES = {
+    "SOE_PROFILE_NAME": "O nome público deve ter entre 3 e 40 caracteres.",
+    "SOE_USERNAME_UNAVAILABLE": "Esse nome público já está em uso. Escolha outro.",
+    "SOE_TEMPORAL_CONFLICT": "Um participante já possui partida com início a menos de 10 minutos deste horário.",
+    "SOE_PARTICIPANT_COUNT": "A quantidade de participantes não atende ao formato selecionado.",
+    "SOE_DUPLICATE_PLAYER": "Um jogador não pode aparecer duas vezes na mesma partida.",
+    "SOE_INVALID_PARTICIPANTS": "Selecione participantes existentes e distintos.",
+    "SOE_INVALID_RESULT": "Informe um único vencedor participante ou empate da mesa.",
+    "SOE_START_REQUIRED": "Informe data e horário aproximado de início.",
+    "SOE_ACTOR_FORBIDDEN": "Sua conta não possui um perfil ativo neste projeto.",
+    "SOE_FORMAT_NOT_FOUND": "Formato não encontrado.",
+    "SOE_GUEST_NAME": "O nome do convidado deve ter entre 2 e 80 caracteres.",
+}
 
-from supabase import create_client
-
-# Carrega as variáveis definidas no arquivo .env
-load_dotenv()
-
-# Busca as variáveis de ambiente (URL carregada) do .env e guarda seus valores em variáveis Python
-# O nome "SUPABASE_URL" está com aspas porque é uma string, então o Python entende que
-# é o nome da variável de ambiente que queremos acessar, ou seja, https://ikmadcldfxvnupajxdwm.supabase.co.
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-# 🧑‍💻 VARIÁVEL NOSSA: supabase.
-# create_client() é uma FUNÇÃO do pacote Supabase.
-# Ela recebe nossa URL e nossa chave e retorna um objeto cliente do Supabase.
-# Esse objeto será usado pelo backend para realizar operações no Supabase.
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+async def rpc(name: str, parameters: dict | None = None):
+    url, key = supabase_config()
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            response = await client.post(f"{url}/rest/v1/rpc/{name}", json=parameters or {}, headers={"apikey": key, "Authorization": f"Bearer {key}"})
+    except httpx.RequestError:
+        raise HTTPException(503, "Não foi possível conectar ao banco. Tente novamente.") from None
+    if not response.is_success:
+        try:
+            error = response.json()
+        except ValueError:
+            error = {}
+        code, message = error.get("code", ""), error.get("message", "")
+        if message in MESSAGES:
+            status = 409 if code == "23P01" else 403 if code == "42501" else 422
+            raise HTTPException(status, {"code": message, "message": MESSAGES[message]})
+        if code in ("40001", "40P01", "55P03"):
+            raise HTTPException(409, "Outra operação alterou os participantes. Tente novamente.")
+        if code in ("23503", "23505", "23514"):
+            raise HTTPException(422, "Referências ou resultado inválidos. Atualize a página e confira os dados.")
+        raise HTTPException(503, "Banco indisponível ou migração de acesso ainda pendente.")
+    return response.json()

@@ -12,6 +12,8 @@ from app.routers.cards import router as cards_router
 # Dentro deste arquivo, damos a ele o nome "games_router".
 from app.routers.games import router as games_router
 from app.routers.player import router as players_router
+from app.routers.auth import router as auth_router
+from app.routers.matches import router as matches_router
 
 
 # 🧑‍💻 VARIÁVEL NOSSA: app.
@@ -41,3 +43,6 @@ app.include_router(cards_router)
 # Registra no aplicativo as rotas existentes dentro de games_router.
 app.include_router(games_router)
 app.include_router(players_router)
+
+app.include_router(auth_router)
+app.include_router(matches_router)

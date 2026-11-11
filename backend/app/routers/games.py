@@ -25,8 +25,8 @@ router = APIRouter(
 # router.get("/") é método do objeto APIRouter do FastAPI.
 # Como o prefixo "/games" já foi definido no APIRouter, usamos apenas "/" aqui.
 @router.get("/")
-def list_games():
+async def list_games():
 
     # Chama a FUNÇÃO NOSSA get_games(), importada de services/game.py.
     # Ela consulta o Supabase e retorna os registros da tabela "game".
-    return get_games()
+    return await get_games()

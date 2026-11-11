@@ -1,4 +1,71 @@
-# Migrações — Supabase CLI como único versionamento
+# Migrações — estado atual do MVP
+
+Atualizado em 2026-11-11. **Supabase CLI é o único versionamento.** As três
+versões abaixo foram aplicadas no projeto vinculado `ikmadcldfxvnupajxdwm`.
+
+| Versão | Efeito e validação |
+| --- | --- |
+| `20261111000100` | Término opcional, sem apagar seus valores. Início já existia manualmente como TIME NULL. |
+| `20261111000200` | Registro atômico PENDING, catálogo, histórico, convidados e identidade. Triggers de resultados/participantes/inícios e locks por jogador. Funções de aplicação executáveis somente por service_role, aprovadas na interface. |
+| `20261111000300` | Criação atômica/idempotente de profile e player para uma conta Supabase autenticada. Usa a FK já existente para auth.users. Nenhuma conta ou perfil foi criado durante a aplicação. Acesso restrito aprovado na interface. |
+
+Pós-verificação remota de 003: colunas, RLS, políticas e ACL das tabelas iguais
+às de antes. As seis capacidades públicas têm EXECUTE somente para service_role
+(além do proprietário); anon/authenticated não podem chamá-las. A chave privada
+fica exclusivamente no backend. A partida id=1 foi preservada com início NULL,
+término 10:30, data 2026-09-15 e status PENDING. Não houve backfill.
+
+A regra bloqueante usa data + início, diferença estritamente inferior a dez
+minutos, incluindo virada de dia, convidados e PENDING/VERIFIED/DISPUTED.
+CANCELLED não conflita. Exatamente dez minutos é permitido. Advisory locks por
+jogador e triggers protegem requisições concorrentes e alterações posteriores.
+Resultados são validados no commit. Não há cotas de criação nem limite retroativo.
+Duplicidades em aproximadamente duas horas geram avisos separados. Histórico sem
+início não permite calcular conflito; permanece intacto e pode gerar aviso.
+
+`approximate_end_time` e `daily_participation_limit` permanecem no banco, mas os
+fluxos do MVP não os utilizam. O catálogo não expõe cota diária. A inspeção de
+dependências encontrou somente o CHECK local da cota (duas entradas de catálogo)
+e nenhuma dependência catalogada do término. Isso não elimina consumidores
+externos/SQL dinâmico. Não há DROP pendente em migrations/. `min_players` e
+`max_players` continuam sendo regras do tamanho da mesa e não foram alterados.
+
+Testes atuais: unittest em `backend/tests/test_*.py`; os testes de 001 usam PGlite
+em memória. `test_match_database.py` usa PostgreSQL 17.11 local descartável,
+incluindo duas sessões concorrentes, reaplicação, atomicidade e acesso por roles.
+As fixtures locais não são baseline nem seeds do remoto. Instalar
+`backend/requirements-dev.txt` e `npm ci` na raiz antes da suíte completa.
+No Windows os binários de teste são uma dependência opcional; em Linux configure
+initdb/postgres no PATH. API e Scryfall também têm testes com transportes simulados.
+
+Fluxo para qualquer **nova** versão, da raiz:
+
+```powershell
+npm.cmd run supabase -- migration list --remote
+npm.cmd run supabase -- db push --remote --skip-vault --dry-run
+```
+
+Revisar somente as novas versões previstas, destino e preservação. Nunca editar
+versões aplicadas ou reparar o ledger para forçar reaplicação. Aplicação de versão
+não destrutiva revisada segue AGENTS.md; mudança de segurança/destrutiva exige
+aprovação específica pela interface antes de `db push --remote --skip-vault --yes`.
+`--yes` responde ao CLI **depois** da aprovação, não a substitui.
+
+**Configuração de autenticação pendente:** `supabase/config.toml` declara
+site_url `http://127.0.0.1:5173`; o remoto ainda usa `http://localhost:3000`.
+`config diff --remote` confirmou uma única atualização declarada. `config push
+--remote --yes` foi rejeitado pela revisão automática por afetar autenticação em
+produção; aguarda aprovação específica do proprietário. Não desativar confirmação
+de e-mail/MFA nem ampliar a allowlist como atalho. Configuração não é migração SQL.
+
+As evidências de inspeção ficam em `supabase/.temp/mvp-audit/`, ignoradas pelo Git.
+Validação de escrita autenticada real e entrega de e-mails ainda pendentes.
+
+## Histórico da adoção inicial (001)
+
+O registro abaixo preserva a documentação da etapa 001. Afirmações sobre ausência
+de endpoints, regras ainda futuras ou versões pendentes descrevem **aquela etapa**;
+o estado atual é a tabela e as orientações acima.
 
 Atualizado em 2026-11-11. A versão `20261111000100` foi aplicada após autorização
 explícita do proprietário no projeto remoto Scroll of Encounters

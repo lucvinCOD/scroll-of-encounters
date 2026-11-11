@@ -19,8 +19,8 @@ router = APIRouter(
 # Define que uma requisição HTTP GET para "/players" executará esta função.
 # O prefixo "/players" já está definido no APIRouter, por isso a rota usa "/".
 @router.get("/")
-def list_players():
+async def list_players():
     # Chama a função get_players() que NÓS criamos em services/player.py.
     # Ela retorna todos os jogadores cadastrados no banco de dados.
     # O resultado é retornado como resposta da requisição HTTP GET,.
-    return get_players()
+    return await get_players()

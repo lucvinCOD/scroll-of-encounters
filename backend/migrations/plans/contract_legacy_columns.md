@@ -6,9 +6,16 @@ Nenhuma remoção é aplicada pelo próximo `db push`.
 
 ## Remover daily_participation_limit
 
-Verificado no código atual: `backend/app` não referencia essa coluna nem consulta
-`format`. `game.py` e `player.py` consultam apenas `game` e `player`.
+Verificado no MVP de 2026-11-11: backend/frontend não usam essa cota.
+`soe_catalog` consulta format, mas seleciona campos explícitos e omite o limite.
+`soe_register_match` e as constraints usam min_players/max_players, preservados.
 Isso não confirma ausência de dependências no banco ou em consumidores externos.
+
+A inspeção remota do MVP encontrou somente o CHECK local da cota e nenhuma
+dependência catalogada do término. Não foi removido qualquer objeto. As duas
+entradas de pg_depend para a cota apontam ao mesmo CHECK; não são duas regras
+de produto distintas. Rotinas com SQL dinâmico e consumidores externos continuam
+dependendo de análise. A remoção não faz parte das migrações 001, 002 ou 003.
 
 Na verificação remota de 2026-11-11, observou-se `integer NOT NULL`, sem default,
 e CHECK `daily_participation_limit > 0`. Os dados e definições de format foram
