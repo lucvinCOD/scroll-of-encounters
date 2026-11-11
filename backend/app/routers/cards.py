@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-
 from app.services.scryfall import search_card_by_name
 
 

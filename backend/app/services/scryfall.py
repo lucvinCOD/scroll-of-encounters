@@ -5,7 +5,7 @@ from fastapi import HTTPException
 SCRYFALL_URL = "https://api.scryfall.com/cards/named"
 
 HEADERS = {
-    "User-Agent": "Communities/0.1",
+    "User-Agent": "ScrollOfEncounters/0.1",
     "Accept": "application/json;q=0.9,*/*;q=0.8"
 }
 

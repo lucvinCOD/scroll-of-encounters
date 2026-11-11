@@ -1,0 +1,11 @@
+# Configuração local do CLI, sem vínculo remoto ou credenciais.
+project_id = "scroll-of-encounters"
+
+[db.migrations]
+enabled = true
+schema_paths = []
+
+# Adoção incremental de banco existente; nenhum seed é executado.
+[db.seed]
+enabled = false
+sql_paths = []
