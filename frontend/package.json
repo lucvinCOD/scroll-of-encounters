@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite",
     "check": "tsc --noEmit",
-    "test": "node --test src/services/apiClient.test.ts tests/dev-server.test.mjs",
+    "test": "node --test src/services/apiClient.test.ts src/services/authCallback.test.ts tests/dev-server.test.mjs",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
   },

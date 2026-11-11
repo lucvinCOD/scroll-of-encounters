@@ -1,6 +1,9 @@
 # Configuração local do CLI, sem vínculo remoto ou credenciais.
 project_id = "scroll-of-encounters"
 
+[auth]
+site_url = "http://127.0.0.1:5173"
+
 [db.migrations]
 enabled = true
 schema_paths = []

@@ -1,10 +1,19 @@
+import { useEffect, useState } from "react";
+import { AppProvider } from "./state/AppContext";
 import AppShell from "./components/layout/AppShell";
 import HomePage from "./pages/HomePage";
-
-export default function App() {
-  return (
-    <AppShell>
-      <HomePage />
-    </AppShell>
-  );
+import CommunitiesPage from "./pages/CommunitiesPage";
+import PlayersPage from "./pages/PlayersPage";
+import HistoryPage from "./pages/HistoryPage";
+import LoginPage from "./pages/LoginPage";
+import ProfilePage from "./pages/ProfilePage";
+import PasswordPage from "./pages/PasswordPage";
+import RegisterMatchPage from "./pages/RegisterMatchPage";
+function Navigation() {
+  const [route, setRoute] = useState(window.location.hash.slice(1) || "/");
+  useEffect(() => { const navigate = () => { setRoute(window.location.hash.slice(1) || "/"); window.scrollTo(0, 0); }; window.addEventListener("hashchange", navigate); return () => window.removeEventListener("hashchange", navigate); }, []);
+  const path = route.split("?")[0];
+  const pages = { "/": <HomePage/>, "/comunidades": <CommunitiesPage/>, "/jogadores": <PlayersPage/>, "/historico": <HistoryPage/>, "/perfil": <ProfilePage/>, "/nova-senha": <PasswordPage/>, "/entrar": <LoginPage/>, "/partidas/nova": <RegisterMatchPage/> };
+  return <AppShell route={route}>{pages[path as keyof typeof pages] || <div className="state-panel"><h1>Esta página não está no mapa.</h1><a href="#/" className="button primary">Voltar ao início</a></div>}</AppShell>;
 }
+export default function App() { return <AppProvider><a className="skip-link" href="#main-content" onClick={(event) => { event.preventDefault(); document.getElementById("main-content")?.focus(); }}>Pular para o conteúdo</a><Navigation/></AppProvider>; }

@@ -33,7 +33,7 @@ test("serve o frontend e encaminha /api ao backend configurado", { timeout: 30_0
 
     const css = await fetch(`${base}/src/index.css?direct`);
     assert.equal(css.status, 200);
-    assert.match(await css.text(), /\.bg-stone-950/);
+    assert.match(await css.text(), /\.min-h-screen/);
 
     const response = await fetch(`${base}/api/health?source=test`);
     assert.equal(response.status, 200);
