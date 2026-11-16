@@ -1,0 +1,18 @@
+{
+  "name": "scroll-of-encounters-tooling",
+  "private": true,
+  "description": "Ferramentas locais de migração; não é uma aplicação frontend.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "supabase": "supabase"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.16",
+    "supabase": "3.1.0"
+  },
+  "optionalDependencies": {
+    "@embedded-postgres/windows-x64": "17.11.0-beta.19"
+  }
+}
